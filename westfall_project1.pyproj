@@ -24,9 +24,6 @@
   <ItemGroup>
     <Compile Include="westfall_project1.py" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="kittens.jpg" />
-  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
