@@ -91,7 +91,7 @@ def dir_Exists(ftpObj, dirName):
     return False #otherwise, directory not found, return False
 
 
-#*********************
+#********************* 
 #Disconnects from the ftp server, steralizes ftpObj
 #Should be called whenever switching servers or closing the program
 #ftpObj is a active ftp connection object
