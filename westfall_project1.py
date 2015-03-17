@@ -76,4 +76,3 @@ def disconnect(ftpObj):
 
 #MAKE SURE THIS IS THE END OF THE DOCUMENT. DO NOT MOVE OR ADD AFTER THIS POINT*********************************************************************
 main()
-#testing if visual studio works
