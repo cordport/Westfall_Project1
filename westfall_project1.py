@@ -91,6 +91,22 @@ def dir_Exists(ftpObj, dirName):
     return False #otherwise, directory not found, return False
 
 
+#*********************
+#Remote file
+#*********************
+def set_Remote_Permissions(ftpObj, path, perm):
+    if perm == "rwx":
+        permNum = "0777" #Read, write, execute
+    elif perm == "rw-":
+        permNum = "0666" #Read, write
+    elif perm == "r--":
+        permNum = "0444" #Read only
+    else:
+        permNum = "0000" #None, catch-all
+
+    ftpObj.sendcmd("SITE CHMOD %s %s" % (permNum, path))
+
+
 #********************* 
 #Disconnects from the ftp server, steralizes ftpObj
 #Should be called whenever switching servers or closing the program
