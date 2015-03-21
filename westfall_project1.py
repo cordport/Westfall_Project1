@@ -1,12 +1,13 @@
 import urllib3
-import Connection_Class
+from Connection_Class import connection_Class
+import ftplib
 
 def main():
-    ftp = connect("drwestfall.net")
-    login(ftp, "ftp05", "student")
+    ftp = connection_Class("drwestfall.net")
+    ftp.login("ftp05", "student")
     print(ftp.getwelcome())
-    download_BIN(ftp, "newFile")
-    disconnect(ftp)
+    ftp.download_BIN("newFile")
+    ftp.disconnect()
 
 
 

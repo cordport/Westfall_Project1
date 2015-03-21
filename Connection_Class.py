@@ -1,11 +1,14 @@
 import ftplib
 
 
-class Connection_Class(ftplib.FTP):
-
-    def __init__():
-        isOpen = False
-
+class connection_Class(ftplib.FTP):
+    
+    #constructor
+    def __init__(self, url):
+        self.isOpen = False
+        super().__init__()
+        self.connect(url)
+        
 
     #*********************
     #connects a new ftp obj to the given url
@@ -15,10 +18,12 @@ class Connection_Class(ftplib.FTP):
     #*********************
     def connect(self, url):
         try:
-            self.FTP(url)
+            super().connect(url)
         except ftplib.all_errors:
+            self.isOpen = False
             #What should be returned if we have an error? we can't just return the ftp obj... maybe None?
             return False
+        self.isOpen = True
         return True
 
 
@@ -31,7 +36,7 @@ class Connection_Class(ftplib.FTP):
     #*********************
     def login(self, userName, Password):
         try:
-            self.login(userName, Password)
+            super().login(str(userName), Password)
         except ftplib.all_errors:
             return False
         return True
@@ -91,19 +96,11 @@ class Connection_Class(ftplib.FTP):
 
 
     #*********************
-    #Remote file
+    #Remote file permissions
     #*********************
     def set_Remote_Permissions(self, path, perm):
-        if perm == "rwx":
-            permNum = "0777" #Read, write, execute
-        elif perm == "rw-":
-            permNum = "0666" #Read, write
-        elif perm == "r--":
-            permNum = "0444" #Read only
-        else:
-            permNum = "0000" #None, catch-all
-
-        self.sendcmd("SITE CHMOD %s %s" % (permNum, path))
+        permNum = self.switch_Remote_Perm.get(perm, "0000")
+        self.sendcmd("SITE CHMOD {0} {1}".format(permNum, path))
 
 
     #********************* 
@@ -114,16 +111,22 @@ class Connection_Class(ftplib.FTP):
     #if successful, sets ftpObj to None and returns true
     #*********************
     def disconnect(self):
-        try:
-            self.close()
-        except ftplib.all_errors:
-            return False
-        self.cl
-        return True
+        if self.is_Open():
+            try:
+                self.close()
+            except ftplib.all_errors:
+                return False
+            self
+            return True
 
     #********************* 
     #Is connection closed?
     #*********************
     def is_Open(self):
-        return IsOpen
+        return self.isOpen
 
+    switch_Remote_Perm = {
+        "rwx": "0777", #Read, write, execute
+        "rw-": "0666", #Read, write
+        "r--": "0444", #Read only
+        }
