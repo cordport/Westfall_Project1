@@ -1,5 +1,5 @@
 import ftplib
-
+from multiprocessing import Process, Queue
 
 class connection_Class(ftplib.FTP):
     
@@ -8,7 +8,13 @@ class connection_Class(ftplib.FTP):
         self.isOpen = False
         super().__init__()
         self.connect(url)
-        
+        self.queue = Queue()
+        self.proc = Process(target = None)
+
+    def __del__(self):
+        self.disconnect()
+        self.queue.close()
+        self.proc.join()
 
     #*********************
     #connects a new ftp obj to the given url
@@ -43,20 +49,38 @@ class connection_Class(ftplib.FTP):
 
 
     #*********************
-    #Downloads binary version of file (for use with non text based files)
-    #(i.e. JPG GIF PDF) SHOULD NOT BE USED FOR TXT or DOCX
+    #Downloads binary version of file 
+    #This should be faster then the ASCII version
     #ftpObj is the current working ftp server object
     #fileName is the file you want downloaded
+    #blockSize is the size of the packets being sent (default is 8Kb)
+    #callBackMethod is a function such as "update progress bar"
     #THIS ASSUMES YOU ARE IN THE CORRECT DIR
     #RETURN is False if error occurs else true
     #*********************
-    def download_BIN(self, fileName):
-        try:                            #we need some way to monitor the progress... any ideas? compaire the file size? is there a built in method?
-            self.retrbinary('RETR '.join(fileName), open(fileName, 'wb').write)
+    def download_BIN(self, fileName, blockSize = 8192, callBackMethod = None):
+        try:                            #we need some way to monitor the progress... 
+            self.retrbinary('RETR '.join(fileName), open(fileName, 'wb').write, blockSize, callBackMethod )
         except ftplib.all_errors:
             return False                #we should change this to actuall tell the error
         return True
 
+    #*********************
+    #uploads binary version of file 
+    #This should be faster then the ASCII version.
+    #ftpObj is the current working ftp server object
+    #fileName is the file you want uploaded
+    #blockSize should not be changed unless you know the network can handle it (so not at liberty lol)
+    #callBackMethod is a function such as "update progress bar"
+    #THIS ASSUMES YOU ARE IN THE CORRECT DIR
+    #RETURN is False if error occurs else true
+    #*********************
+    def upload_BIN(self, fileName, blockSize = 8192, callBackMethod = None):
+        try:                            #we need some function to monitor the progress to pass to callBackMethod
+            self.storbinary("STOR ".join(fileName), open(fileName), blockSize, callBackMethod )
+        except ftplib.all_errors:
+            return False                #we should change this to actuall tell the error
+        return True
 
     #*********************
     #Deletes a directory from the server
@@ -130,3 +154,17 @@ class connection_Class(ftplib.FTP):
         "rw-": "0666", #Read, write
         "r--": "0444", #Read only
         }
+
+
+    #*******************
+    # multiprocessing!
+    # NOT DONE YET DO NOT TRY TO USE!!!!!!!!!!!!
+    #*******************
+    def ftp_Manager(self, function, args = None):
+        if self.queue.empty():
+            #check and see if there is process
+            if not self.proc.is_alive():
+                self.proc = multiprocessing.Process(target=None)
+                self.proc
+        else:
+            self.queue.put((function, args))

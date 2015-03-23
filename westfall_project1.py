@@ -1,6 +1,5 @@
 import urllib3
 from Connection_Class import connection_Class
-import ftplib
 
 def main():
     ftp = connection_Class("drwestfall.net")
@@ -14,4 +13,5 @@ def main():
 
 
 #MAKE SURE THIS IS THE END OF THE DOCUMENT. DO NOT MOVE OR ADD AFTER THIS POINT*********************************************************************
-main()
+if __name__ == '__main__':
+    main()
