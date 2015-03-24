@@ -90,7 +90,7 @@ class connection_Class(ftplib.FTP):
     #*********************
     def delete_Dir(self, dirName):
         try:
-            if dir_Exists(self, dirName): #if the directory exists
+            if self.dir_Exists(dirName): #if the directory exists
                 self.rmd(dirName) #remove the directory
                 print("Directory: ", dirName, " deletion successful ") #print successful deletion message
             else: #otherwise, the directory does not exist
@@ -101,6 +101,22 @@ class connection_Class(ftplib.FTP):
             return False #return false indicates deletion did not occur
         return True
 
+
+    def add_Dir(self, dirName):
+        try:
+            if self.dir_Exists(dirName):
+                print("Directory: ", dirName, " already exists.")
+                return False
+
+            else:
+                self.mkd(dirName)
+                print("Directory: ", dirName, " added successfully.")
+                return True
+               
+        except ftp.all_errors:
+            print("Directory: ", dirName, " addition failed. ")
+            return False
+      
 
     #*********************
     #Checks if directory exists (in current location)

@@ -5,7 +5,9 @@ def main():
     ftp = connection_Class("drwestfall.net")
     ftp.login("ftp05", "student")
     print(ftp.getwelcome())
-    ftp.download_BIN("newFile")
+    
+    ftp.add_Dir("Direct01")
+
     ftp.disconnect()
 
 
